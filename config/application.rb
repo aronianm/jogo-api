@@ -36,7 +36,7 @@ module JogoApi
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
     config.hosts << "michaels-macbook-air.local:3001"
-    config.hosts << "127.0.0.1:3001"
+    config.hosts << "18.188.182.174:3001"
 
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
