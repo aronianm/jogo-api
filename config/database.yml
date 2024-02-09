@@ -25,6 +25,19 @@ test:
   <<: *default
   database: storage/test.sqlite3
 
+qa:
+  <<: *default
+  database: 'jogo-qa'
+  host: <%= ENV.fetch("MYSQL_HOST") %>
+  user: <%= ENV.fetch("MYSQL_USER") %>
+  password: <%= ENV.fetch("MYSQL_PASSWORD") %>
+  port: 3306
+
 production:
   <<: *default
-  database: storage/production.sqlite3
+  database: 'jogo-production'
+  host: <%= ENV.fetch("MYSQL_HOST") %>
+  user: <%= ENV.fetch("MYSQL_USER") %>
+  password: <%= ENV.fetch("MYSQL_PASSWORD") %>
+  port: 3306
+  
