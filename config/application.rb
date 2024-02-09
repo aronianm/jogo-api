@@ -38,6 +38,7 @@ module JogoApi
     config.hosts << "michaels-macbook-air.local:3001"
     config.hosts << "18.188.182.174"
     config.hosts << "jogo-fitness.com"
+    config.hosts << "ec2-18-188-182-174.us-east-2.compute.amazonaws.com"
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
