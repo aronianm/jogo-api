@@ -37,6 +37,7 @@ module JogoApi
     # config.eager_load_paths << Rails.root.join("extras")
     config.hosts << "michaels-macbook-air.local:3001"
     config.hosts << "18.188.182.174"
+    config.hosts << "127.0.0.1:3001"
     config.hosts << "fogo-fitness.com"
     config.hosts << "www.fogo-fitness.com"
     config.hosts << "ec2-18-188-182-174.us-east-2.compute.amazonaws.com"
