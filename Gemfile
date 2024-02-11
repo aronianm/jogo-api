@@ -22,15 +22,15 @@ gem 'jsonapi-serializer'
 gem 'phonelib'
 
 #deployments
-gem "capistrano"
-gem "capistrano-rails"
-gem "capistrano-bundler"
-gem "capistrano3-puma"
-gem 'capistrano-rvm'
-gem 'capistrano-puma'
+# gem "capistrano"
+# gem "capistrano-rails"
+# gem "capistrano-bundler"
+# gem "capistrano3-puma"
+# gem 'capistrano-rvm'
+# gem 'capistrano-puma'
 
-gem 'ed25519'
-gem 'bcrypt_pbkdf'
+# gem 'ed25519'
+# gem 'bcrypt_pbkdf'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
