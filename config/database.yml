@@ -27,7 +27,7 @@ test:
 
 qa:
   <<: *default
-  database: 'jogo-qa'
+  database: 'jogo_qa'
   host: <%= ENV.fetch("MYSQL_HOST") %>
   user: <%= ENV.fetch("MYSQL_USER") %>
   password: <%= ENV.fetch("MYSQL_PASSWORD") %>
