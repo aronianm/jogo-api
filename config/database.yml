@@ -35,7 +35,7 @@ qa:
 
 production:
   <<: *default
-  database: 'jogo-production'
+  database: 'jogo_production'
   host: <%= ENV.fetch("MYSQL_HOST") %>
   user: <%= ENV.fetch("MYSQL_USER") %>
   password: <%= ENV.fetch("MYSQL_PASSWORD") %>
