@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_06_045242) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_11_054802) do
+  create_table "leagues", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "leagueName"
+    t.string "leagueCode"
+    t.integer "numberOfWeeks"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "matchups", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "userOne", null: false
     t.integer "userTwo", null: false
@@ -20,6 +28,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_06_045242) do
     t.integer "createdBy", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "league_id"
   end
 
   create_table "season_matchups", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -44,7 +53,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_06_045242) do
     t.integer "active", default: 1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "league_id"
     t.index ["matchup_id"], name: "fk_rails_a523f1a9da"
+  end
+
+  create_table "user_leagues", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "wins"
+    t.integer "losses"
+    t.integer "league_id"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
