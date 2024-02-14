@@ -10,25 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_11_054802) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_13_233008) do
   create_table "leagues", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "leagueName"
     t.string "leagueCode"
     t.integer "numberOfWeeks"
+    t.integer "numberOfUsersNeeded"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "matchups", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.integer "userOne", null: false
-    t.integer "userTwo", null: false
+    t.integer "userOneId", null: false
+    t.integer "userTwoId", null: false
     t.boolean "isActive", default: true, null: false
     t.boolean "isFinalized", default: false, null: false
-    t.boolean "userAccepted"
-    t.integer "createdBy", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "league_id"
+    t.integer "week"
+    t.float "userOneDailyScore"
+    t.float "userOneTotalScore"
+    t.float "userTwoDailyScore"
+    t.float "userTwoTotalScore"
+    t.date "userOneScoreUpdated"
+    t.date "userTwoScoreUpdated"
+    t.date "endDate"
   end
 
   create_table "season_matchups", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

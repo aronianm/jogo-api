@@ -1,15 +1,14 @@
 class LeaguesController < ApplicationController
     def index
-        leagues = League.includes(:user_leagues => :user).where('user_leagues.user_id' => current_user.id).as_json(
+        league_ids = League.joins(:user_leagues).where('user_leagues.user_id' => current_user.id).pluck(:id)
+        leagues = League.includes(:user_leagues => :user).where(id: league_ids).as_json(
             include: {:user_leagues => {
                       include: :user}
-    }
-        )
+        })
     
         leagues.map do |l|
             l['userLeagues'] = l.delete('user_leagues')
         end
-        
         render json: leagues
         
     end
@@ -20,21 +19,30 @@ class LeaguesController < ApplicationController
             user_id: current_user.id,
             league_id: l.id
         )
+        unless u.save
+            l.delete
+        end
+        render :ok
+    end
+
+    def join
+        l = League.find_by(params[:league].permit)
+        u = UserLeague.new(
+            user_id: current_user.id,
+            league_id: l.id
+        )
         u.save
-        
-        render :json => UserLeague.includes(:league).as_json(include: {:league => {
-            include: :season_matchups
-        }})
+        render :ok
     end
 
     def show
-        binding.pry
+        render :json => League.find(params[:id])
     end
 
 
     private
     def league_params 
-        params[:league].permit(:leagueName, :numberOfWeeks)
+        params[:league].permit(:leagueName, :numberOfWeeks, :numberOfUsersNeeded)
     end
 
 end

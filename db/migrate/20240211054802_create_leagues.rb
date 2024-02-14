@@ -4,6 +4,7 @@ class CreateLeagues < ActiveRecord::Migration[7.1]
       t.string :leagueName
       t.string :leagueCode
       t.integer :numberOfWeeks
+      t.integer :numberOfUsersNeeded
       t.timestamps
     end
 

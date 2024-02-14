@@ -1,15 +1,16 @@
 Rails.application.routes.draw do
-  resources :matchups do 
-    collection do 
-      get :challenges
-    end
-    member do
-      post :update_scores
-    end
-  end
 
   resources :leagues do
     get :users
+    post :join, on: :collection
+    resources :matchups do
+      collection do 
+        get :challenges
+      end
+      member do
+        post :update_scores
+      end
+    end
   end
 
   resources :seasons

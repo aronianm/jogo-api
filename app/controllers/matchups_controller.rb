@@ -3,18 +3,26 @@ class MatchupsController < ApplicationController
 
   # GET /matchups
   def index
-    @matchups = Matchup.find_users(current_user.id).as_json(
+    @matchups = Matchup.includes(:userTwo, :userOne).where(:league_id => params[:league_id]).as_json(
       include: {
         seasons: {},
         userOne: { only: [:id, :fname, :lname] },
         userTwo: { only: [:id, :fname, :lname] }
       }
     )
-    @matchups.each {|m| m['currentUser'] = current_user.id}
-    puts @matchups[0]
-    render json: @matchups
+    @matchups.each do |m|
+      if m['userOne']['id'] == current_user.id
+        m['currentUser'] = m['userOne']['id']
+        m['currentUserScore'] = (m['userOneDailyScore'] + m['userOneTotalScore']).round(2)
+        m['opponentScore'] = (m['userTwoDailyScore'] + m['userTwoTotalScore']).round(2)
+      else
+        m['currentUser'] = m['userTwo']['id']
+        m['opponentScore'] = (m['userOneDailyScore'] + m['userOneTotalScore']).round(2)
+        m['currentUserScore'] = (m['userTwoDailyScore'] + m['userTwoTotalScore']).round(2)
+      end
+    end
+    render :json => @matchups
 
-    
   end
 
   def challenges
@@ -34,64 +42,68 @@ class MatchupsController < ApplicationController
         # first we get the score
 
         score = params['score']
-
         # now we get today since health kit is only stored 
         # for each day
-        today = Date.today
+        today = Date.today + 1.day 
+        @league = League.find(params[:league_id])
         # the we grab the matchup
         @matchup = Matchup.find(params[:id])
         # then we grab the active season 
         # there should only be one 
         # other wise the matchup is retired or the user has not accepted it yet
-        if @matchup.active?
-            @season = @matchup.activeSeason
-            # now this current season should have a current matchup
-            @season_matchup = @season.max_week_matchup
+        if @matchup.isActive
             # then we check if the current user equals user 1
             # becuase they are two users on each matchup
-            if @matchup.userOne.id == current_user.id && @season_matchup.userOneScoreUpdated <= today
+            if @matchup.userOne.id == current_user.id && @matchup.userOneScoreUpdated <= today
                 # if last time the user updated his score
                 # then the score will be updated.
                 # now we check the daily score
                 # and if they don't equal we make the 
                 # userDailyOneScore = score
-                if @season_matchup.userOneDailyScore != score
-                    @season_matchup.userOneDailyScore = score
-                    @season_matchup.userOneScoreUpdated = today 
+                if @matchup.userOneDailyScore != score
+                    @matchup.userOneDailyScore = score
+                   @matchup.userOneScoreUpdated = today 
                 end
-                if @season_matchup.userOneScoreUpdated < today
+                if @matchup.userOneScoreUpdated < today
                     # update score to to the total and set the dailyscore to 0
-                    @season_matchup.userOneTotalScore += @season_matchup.userOneDailyScore
-                    @season_matchup.userOneDailyScore = 0
+                    @matchup.userOneTotalScore += @matchup.userOneDailyScore
+                    @matchup.userOneDailyScore = 0
                 end
-            elsif @matchup.userTwo.id == current_user.id  && @season_matchup.userTwoScoreUpdated <= today
-                if @season_matchup.userTwoDailyScore != score
-                    @season_matchup.userTwoDailyScore = score
-                    @season_matchup.userTwoScoreUpdated = today 
+            elsif @matchup.userTwo.id == current_user.id  && @matchup.userTwoScoreUpdated <= today
+                if @matchup.userTwoDailyScore != score
+                  @matchup.userTwoDailyScore = score
+                  @matchup.userTwoScoreUpdated = today 
                 end
                 # now we do the same thing for user2
-                if @season_matchup.userTwoScoreUpdated < today
-                    @season_matchup.userTwoTotalScore += @season_matchup.userTwoDailyScore
-                    @season_matchup.userTwoDailyScore = 0
+                if @matchup.userTwoScoreUpdated < today
+                  @matchup.userTwoTotalScore += @matchup.userTwoDailyScore
+                  @matchup.userTwoDailyScore = 0
                 end 
             end
-
-            if @season_matchup.endDate <= today
-                if @season_matchup.userOneTotalScore > @season_matchup.userTwoTotalScore
-                    @season.userOneWins += 1
-                elsif @season_matchup.userOneTotalScore < @season_matchup.userTwoTotalScore
-                    @season.userTwoWins += 1
-                end
-                @season_matchup.active = false
-                @season.build_new_week
-                @season.save
-            end
-            @season_matchup.save
-            @matchup.save
-            render :json => @matchup
+              @matchup.save
+              
             else
             render :json => @matchup
         end
+
+        @matchup = Matchup.includes(:userTwo, :userOne).find(@matchup.id).as_json(
+          include: {
+            seasons: {},
+            userOne: { only: [:id, :fname, :lname] },
+            userTwo: { only: [:id, :fname, :lname] }
+          }
+        )
+
+        if @matchup['userOne']['id'] == current_user.id
+          @matchup['currentUser'] = @matchup['userOne']['id']
+          @matchup['currentUserScore'] = (@matchup['userOneDailyScore'] + @matchup['userOneTotalScore']).round(2)
+          @matchup['opponentScore'] = (@matchup['userTwoDailyScore'] + @matchup['userTwoTotalScore']).round(2)
+        else
+          @matchup['currentUser'] = @matchup['userTwo']['id']
+          @matchup['opponentScore'] = (@matchup['userOneDailyScore'] + @matchup['userOneTotalScore']).round(2)
+          @matchup['currentUserScore'] = (@matchup['userTwoDailyScore'] + @matchup['userTwoTotalScore']).round(2)
+        end
+        render :json => @matchup
     end
 
   # GET /matchups/1
