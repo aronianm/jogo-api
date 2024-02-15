@@ -6,6 +6,9 @@ class Matchup < ApplicationRecord
     belongs_to :league, class_name: 'League', foreign_key: 'league_id'
     before_create :massage_matchups
     before_update :updates_league_standings
+    belongs_to :league, class_name: 'League', :foreign_key => :league_id
+
+    
     has_many :user_leagues, through: :league
 
     def self.find_users user_id

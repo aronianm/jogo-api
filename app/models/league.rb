@@ -10,28 +10,27 @@ class League < ApplicationRecord
         today = Date.today
         weeks = self.numberOfWeeks
         users = user_leagues.shuffle
-        matchups = []
-        # Generate matchups for each week
+        # Create matchups for each week
+    
         weeks.times do |week|
-            (users.length / 2).times do |i|
-                user_one = users[i]
-                user_two = users[-i - 1]
-                # Check if user_one is not the same as user_two
-                if user_one != user_two
-                    matchups << [user_one, user_two, week + 1]
-                end
-            end
-            users.rotate!
-        end
+            matchups = users.each_slice(2).to_a
+            matchups.each do |(u1, u2)|
         
-        # Create matchups in the database
-        matchups.each do |m|
-            Matchup.create(league_id: self.id, 
-                            userOneId: m[0].user_id,
-                            userTwoId: m[1].user_id,
-                            week: m[2],
-                            isActive: m[2] == 1,
-                            endDate: today + (7.days * m[2]))
+                # Determine the index of the matchup in the matchups array
+                matchup_index = (week - 1) * matchups.length + matchups.index([u1, u2])
+                
+                # Determine the end date for the matchup (adjust as needed)
+                end_date = Date.today + (7 * week).days
+                
+                # Create the matchup
+                Matchup.create(league_id: self.id, 
+                                userOneId: u1.user_id,
+                                userTwoId: u2.user_id,
+                                week: week + 1,
+                                isActive: week == 0,
+                                endDate: end_date)
+            end
+            users.shuffle!
         end
     end
 

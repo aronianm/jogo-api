@@ -5,22 +5,21 @@ class MatchupsController < ApplicationController
   def index
     @matchups = Matchup.includes(:userTwo, :userOne).where(:league_id => params[:league_id]).as_json(
       include: {
-        seasons: {},
         userOne: { only: [:id, :fname, :lname] },
         userTwo: { only: [:id, :fname, :lname] }
       }
     )
+
     @matchups.each do |m|
       if m['userOne']['id'] == current_user.id
         m['currentUser'] = m['userOne']['id']
-        m['currentUserScore'] = (m['userOneDailyScore'] + m['userOneTotalScore']).round(2)
-        m['opponentScore'] = (m['userTwoDailyScore'] + m['userTwoTotalScore']).round(2)
-      else
+      elsif m['userTwo']['id'] == current_user.id
         m['currentUser'] = m['userTwo']['id']
-        m['opponentScore'] = (m['userOneDailyScore'] + m['userOneTotalScore']).round(2)
-        m['currentUserScore'] = (m['userTwoDailyScore'] + m['userTwoTotalScore']).round(2)
       end
+        m['userOneScore'] = (m['userOneDailyScore'] + m['userOneTotalScore']).round(2)
+        m['userTwoScore'] = (m['userTwoDailyScore'] + m['userTwoTotalScore']).round(2)
     end
+    @matchups = @matchups.sort_by{|t| t['currentUser'] == current_user.id ? 0 : 1}
     render :json => @matchups
 
   end
@@ -28,7 +27,6 @@ class MatchupsController < ApplicationController
   def challenges
     @matchups = Matchup.find_users_invites(current_user.id).as_json(
       include: {
-        seasons: {},
         userOne: { only: [:id, :fname, :lname] },
         userTwo: { only: [:id, :fname, :lname] }
       }
