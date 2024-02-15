@@ -15,6 +15,8 @@ class MatchupsController < ApplicationController
         m['currentUser'] = m['userOne']['id']
       elsif m['userTwo']['id'] == current_user.id
         m['currentUser'] = m['userTwo']['id']
+      else
+        m['currentUser'] = 0
       end
         m['userOneScore'] = (m['userOneDailyScore'] + m['userOneTotalScore']).round(2)
         m['userTwoScore'] = (m['userTwoDailyScore'] + m['userTwoTotalScore']).round(2)
