@@ -26,7 +26,7 @@ class LeaguesController < ApplicationController
     end
 
     def join
-        l = League.find_by(:code => params[:league][:code].permit)
+        l = League.find_by(:code => params[:league][:code])
         unless l.nil?
             u = UserLeague.new(
                 user_id: current_user.id,
