@@ -2,6 +2,7 @@ Rails.application.routes.draw do
 
   resources :leagues do
     get :users
+    delete :leave_league, on: :member
     post :join, on: :collection
     resources :matchups do
       collection do 

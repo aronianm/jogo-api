@@ -41,6 +41,15 @@ class LeaguesController < ApplicationController
         render :json => League.find(params[:id])
     end
 
+    def leave_league
+        league = League.find(params[:id])
+        UserLeague.where(:user_id => current_user.id, :league_id => league.id).destroy_all
+        if league.user_leagues.count == 0
+            league.destroy
+        end
+        render :ok
+    end
+
 
     private
     def league_params 
