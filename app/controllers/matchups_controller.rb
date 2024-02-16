@@ -60,29 +60,31 @@ class MatchupsController < ApplicationController
                 # now we check the daily score
                 # and if they don't equal we make the 
                 # userDailyOneScore = score
+                if @matchup.userOneScoreUpdated < today
+                  # update score to to the total and set the dailyscore to 0
+                  @matchup.userOneTotalScore += @matchup.userOneDailyScore
+                  @matchup.userOneDailyScore = 0
+                  # thene we reset everything so that this total
+                  # score is not updated again until the next day
+                  @matchup.userOneScoreUpdated = today 
+                end
                 if @matchup.userOneDailyScore != score
                     @matchup.userOneDailyScore = score
-                   @matchup.userOneScoreUpdated = today 
                 end
-                if @matchup.userOneScoreUpdated < today
-                    # update score to to the total and set the dailyscore to 0
-                    @matchup.userOneTotalScore += @matchup.userOneDailyScore
-                    @matchup.userOneDailyScore = 0
-                end
+                @matchup.save
             elsif @matchup.userTwo.id == current_user.id  && @matchup.userTwoScoreUpdated <= today
-                if @matchup.userTwoDailyScore != score
-                  @matchup.userTwoDailyScore = score
-                  @matchup.userTwoScoreUpdated = today 
-                end
                 # now we do the same thing for user2
                 if @matchup.userTwoScoreUpdated < today
                   @matchup.userTwoTotalScore += @matchup.userTwoDailyScore
                   @matchup.userTwoDailyScore = 0
+                  @matchup.userTwoScoreUpdated = today
                 end 
+                if @matchup.userTwoDailyScore != score
+                  @matchup.userTwoDailyScore = score
+                  
+                end
+                @matchup.save
             end
-              @matchup.save
-              
-            else
             render :json => @matchup
         end
 
