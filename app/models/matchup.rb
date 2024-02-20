@@ -1,6 +1,4 @@
 class Matchup < ApplicationRecord
-
-    has_many :seasons
     belongs_to :userOne, class_name: 'User', foreign_key: 'userOneId'
     belongs_to :userTwo, class_name: 'User', foreign_key: 'userTwoId'
     belongs_to :league, class_name: 'League', foreign_key: 'league_id'
