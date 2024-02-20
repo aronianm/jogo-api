@@ -14,6 +14,9 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :game_center_auth do
+    post :authenticate, on: :collection
+  end
   resources :seasons
   devise_for :users, path: '', path_names: {
     sign_in: 'login',

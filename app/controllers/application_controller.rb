@@ -1,10 +1,13 @@
 class ApplicationController < ActionController::API
-    before_action :configure_permitted_parameters, if: :devise_controller?
-
-    before_action :authenticate_user!
+    before_action :authenticate_game_center_user
     protected
-    def configure_permitted_parameters
-      devise_parameter_sanitizer.permit(:sign_up, keys: %i[fname lname phone_number])
-      devise_parameter_sanitizer.permit(:account_update, keys: %i[name avatar])
+
+    def authenticate_game_center_user
+      jwt = begin JSON.parse(request.headers['Authorization'])['jwt'] rescue nil end
+      @current_user = User.find_by(jwt: jwt)
+      
+      if @current_user.nil?
+        render json: {}, status: 401
+      end
     end
   end

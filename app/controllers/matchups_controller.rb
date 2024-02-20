@@ -11,9 +11,9 @@ class MatchupsController < ApplicationController
     )
 
     @matchups.each do |m|
-      if m['userOne']['id'] == current_user.id
+      if m['userOne']['id'] == @current_user.id
         m['currentUser'] = m['userOne']['id']
-      elsif m['userTwo']['id'] == current_user.id
+      elsif m['userTwo']['id'] == @current_user.id
         m['currentUser'] = m['userTwo']['id']
       else
         m['currentUser'] = 0
@@ -21,19 +21,19 @@ class MatchupsController < ApplicationController
         m['userOneScore'] = (m['userOneDailyScore'] + m['userOneTotalScore']).round(2)
         m['userTwoScore'] = (m['userTwoDailyScore'] + m['userTwoTotalScore']).round(2)
     end
-    @matchups = @matchups.sort_by{|t| t['currentUser'] == current_user.id ? 0 : 1}
+    @matchups = @matchups.sort_by{|t| t['currentUser'] == @current_user.id ? 0 : 1}
     render :json => @matchups
 
   end
 
   def challenges
-    @matchups = Matchup.find_users_invites(current_user.id).as_json(
+    @matchups = Matchup.find_users_invites(@current_user.id).as_json(
       include: {
         userOne: { only: [:id, :fname, :lname] },
         userTwo: { only: [:id, :fname, :lname] }
       }
     )
-    @matchups.each {|m| m['currentUser'] = current_user.id}
+    @matchups.each {|m| m['currentUser'] = @current_user.id}
 
     render json: @matchups
   end
@@ -54,7 +54,7 @@ class MatchupsController < ApplicationController
         if @matchup.isActive
             # then we check if the current user equals user 1
             # becuase they are two users on each matchup
-            if @matchup.userOne.id == current_user.id && @matchup.userOneScoreUpdated <= today
+            if @matchup.userOne.id == @current_user.id && @matchup.userOneScoreUpdated <= today
                 # if last time the user updated his score
                 # then the score will be updated.
                 # now we check the daily score
@@ -72,7 +72,7 @@ class MatchupsController < ApplicationController
                     @matchup.userOneDailyScore = score
                 end
                 @matchup.save
-            elsif @matchup.userTwo.id == current_user.id  && @matchup.userTwoScoreUpdated <= today
+            elsif @matchup.userTwo.id == @current_user.id  && @matchup.userTwoScoreUpdated <= today
                 # now we do the same thing for user2
                 if @matchup.userTwoScoreUpdated < today
                   @matchup.userTwoTotalScore += @matchup.userTwoDailyScore
@@ -96,7 +96,7 @@ class MatchupsController < ApplicationController
           }
         )
 
-        if @matchup['userOne']['id'] == current_user.id
+        if @matchup['userOne']['id'] == @current_user.id
           @matchup['currentUser'] = @matchup['userOne']['id']
           @matchup['currentUserScore'] = (@matchup['userOneDailyScore'] + @matchup['userOneTotalScore']).round(2)
           @matchup['opponentScore'] = (@matchup['userTwoDailyScore'] + @matchup['userTwoTotalScore']).round(2)
@@ -110,7 +110,7 @@ class MatchupsController < ApplicationController
 
   # GET /matchups/1
   def show
-    @matchup.viewing_user = current_user.id
+    @matchup.viewing_user = @current_user.id
     render json: @matchup.as_json(
       include: {
         seasons: {
@@ -126,8 +126,8 @@ class MatchupsController < ApplicationController
     @matchup = Matchup.new()
     user = User.find_by_phone params[:phone_number]
     @matchup.userOne = user
-    @matchup.userTwo = current_user
-    @matchup.createdBy = current_user.id
+    @matchup.userTwo = @current_user
+    @matchup.createdBy = @current_user.id
     if @matchup.save
       render json: @matchup, status: :created, location: @matchup
     else

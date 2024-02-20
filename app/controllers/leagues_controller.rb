@@ -1,6 +1,6 @@
 class LeaguesController < ApplicationController
     def index
-        league_ids = League.joins(:user_leagues).where('user_leagues.user_id' => current_user.id).pluck(:id)
+        league_ids = League.joins(:user_leagues).where('user_leagues.user_id' => @current_user.id).pluck(:id)
         leagues = League.includes(:user_leagues => :user).where(id: league_ids).as_json(
             include: {:user_leagues => {
                       include: :user}
@@ -14,9 +14,10 @@ class LeaguesController < ApplicationController
     end
 
     def create
+        
         l = League.create(league_params)
         u = UserLeague.new(
-            user_id: current_user.id,
+            user_id: @current_user.id,
             league_id: l.id
         )
         unless u.save
@@ -29,7 +30,7 @@ class LeaguesController < ApplicationController
         l = League.find_by(:leagueCode => params[:league][:code])
         unless l.nil?
             u = UserLeague.new(
-                user_id: current_user.id,
+                user_id: @current_user.id,
                 league_id: l.id
             )
             u.save
@@ -43,7 +44,7 @@ class LeaguesController < ApplicationController
 
     def leave_league
         league = League.find(params[:id])
-        UserLeague.where(:user_id => current_user.id, :league_id => league.id).destroy_all
+        UserLeague.where(:user_id => @current_user.id, :league_id => league.id).destroy_all
         if league.user_leagues.count == 0
             league.destroy
         end

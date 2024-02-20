@@ -12,6 +12,6 @@ class UsersController < ApplicationController
     end
 
     def primary_user
-        render :json => current_user
+        render :json => @current_user
     end
 end

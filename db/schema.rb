@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_13_233008) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_20_032839) do
   create_table "leagues", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "leagueName"
     t.string "leagueCode"
@@ -69,35 +69,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_13_233008) do
     t.integer "wins"
     t.integer "losses"
     t.integer "league_id"
+    t.boolean "default", default: false
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "username"
     t.string "fname"
     t.string "lname"
-    t.string "email", default: ""
-    t.string "phone_number", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string "current_sign_in_ip"
-    t.string "last_sign_in_ip"
-    t.string "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
-    t.string "unconfirmed_email"
-    t.integer "failed_attempts", default: 0, null: false
-    t.string "unlock_token"
-    t.datetime "locked_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "jti", null: false
-    t.index ["jti"], name: "index_users_on_jti", unique: true
-    t.index ["phone_number"], name: "index_users_on_phone_number", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.string "apple_game_center_id"
+    t.string "jwt"
   end
 
   add_foreign_key "season_matchups", "seasons", on_delete: :cascade

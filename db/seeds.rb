@@ -9,16 +9,17 @@
 #   end
 
 
+if ENV["RAILS_ENV"] != "production"
+    l = League.create(leagueName: "Test League 20", numberOfWeeks: 10, numberOfUsersNeeded: 20)
+    users = []
+    19.times do |i|
+        u = User.create(fname: "Test#{i}", lname: "User#{i}", phone_number: "123-456-7#{i + 10}", email: "test#{i}@gmail.com", password: "password")
+        users.push(u)
+    end
 
-l = League.create(leagueName: "Test League 20", numberOfWeeks: 10, numberOfUsersNeeded: 20)
-users = []
-# 19.times do |i|
-#     u = User.create(fname: "Test#{i}", lname: "User#{i}", phone_number: "123-456-7#{i + 10}", email: "test#{i}@gmail.com", password: "password")
-#     users.push(u)
-# end
+    users = User.all.take(20)
 
-users = User.all.take(20)
-
-users.each do |u|
-    UserLeague.create(user_id: u.id, league_id: l.id)
+    users.each do |u|
+        UserLeague.create(user_id: u.id, league_id: l.id)
+    end
 end

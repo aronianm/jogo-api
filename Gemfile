@@ -20,6 +20,8 @@ gem 'devise-jwt'
 gem 'jsonapi-serializer'
 
 gem 'phonelib'
+gem 'bcrypt'
+gem 'lockbox'
 
 #deployments
 # gem "capistrano"
