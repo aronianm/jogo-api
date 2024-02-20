@@ -85,7 +85,6 @@ class MatchupsController < ApplicationController
                 end
                 @matchup.save
             end
-            render :json => @matchup
         end
 
         @matchup = Matchup.includes(:userTwo, :userOne).find(@matchup.id).as_json(
