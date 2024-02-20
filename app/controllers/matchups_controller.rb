@@ -5,8 +5,8 @@ class MatchupsController < ApplicationController
   def index
     @matchups = Matchup.includes(:userTwo, :userOne).where(:league_id => params[:league_id]).as_json(
       include: {
-        userOne: { only: [:id, :fname, :lname] },
-        userTwo: { only: [:id, :fname, :lname] }
+        userOne: { only: [:id, :username] },
+        userTwo: { only: [:id, :username] }
       }
     )
 
