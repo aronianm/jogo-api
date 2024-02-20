@@ -90,7 +90,6 @@ class MatchupsController < ApplicationController
 
         @matchup = Matchup.includes(:userTwo, :userOne).find(@matchup.id).as_json(
           include: {
-            seasons: {},
             userOne: { only: [:id, :fname, :lname] },
             userTwo: { only: [:id, :fname, :lname] }
           }
