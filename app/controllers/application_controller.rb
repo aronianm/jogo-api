@@ -3,7 +3,8 @@ class ApplicationController < ActionController::API
     protected
 
     def authenticate_game_center_user
-      jwt = begin JSON.parse(request.headers['Authorization'])['jwt'] rescue nil end
+
+      jwt = begin request.headers['Authorization'] rescue nil end
       @current_user = User.find_by(jwt: jwt)
       
       if @current_user.nil?

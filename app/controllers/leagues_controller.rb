@@ -1,5 +1,6 @@
 class LeaguesController < ApplicationController
     def index
+    
         league_ids = League.joins(:user_leagues).where('user_leagues.user_id' => @current_user.id).pluck(:id)
         leagues = League.includes(:user_leagues => :user).where(id: league_ids).as_json(
             include: {:user_leagues => {

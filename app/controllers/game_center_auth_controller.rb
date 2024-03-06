@@ -3,16 +3,11 @@ class GameCenterAuthController < ApplicationController
     def authenticate
       game_center_id = params[:game_center_id]
       if request.server_name == ENV['GAME_CENTER_SERVER']
-        if ENV['RAILS_ENV'] == 'development'
-            @user =  User.find_by(:username => params[:username])
-        else
-            @user =  User.find_by(:apple_game_center_id => params[:game_center_id])
-        end
-      
+        @user =  User.find_by(:username => params[:displayName])
         if @user.nil?
           # If the user doesn't exist, create a new user
-          @user = User.create(apple_game_center_id: game_center_id)
-          @user.username = params[:username]
+          
+          @user = User.create(username: params[:displayName])
           @user.save
         end
 
